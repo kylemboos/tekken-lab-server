@@ -15,6 +15,7 @@ repositories {
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     compile "com.sparkjava:spark-kotlin:1.0.0-alpha"
+    //compile 'org.slf4j:slf4j-simple:+'
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
@@ -24,3 +25,12 @@ compileKotlin {
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }
+
+// Heroku
+task copyToLib(type: Copy) {
+    into "$buildDir/libs"
+    from(configurations.compile)
+}
+
+task stage(dependsOn: ['clean', 'build', 'copyToLib'])
+build.mustRunAfter clean
