@@ -1,10 +1,20 @@
+import spark.Spark
 import spark.kotlin.*
 
 class ServerRunner {
 
     fun run() {
-        println("Im Working Again!")
+        setEnvironmentPort()
+        getHome()
+    }
 
+    private fun setEnvironmentPort() {
+        System.getenv("PORT")?.let {
+            Spark.port(it.toInt())
+        }
+    }
+
+    private fun getHome() {
         get("/") {
             "Welcome to the Tekken Lab"
         }

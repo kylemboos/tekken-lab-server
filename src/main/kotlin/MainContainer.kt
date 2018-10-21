@@ -1,4 +1,7 @@
+object MainContainer {
 
-fun main (args: Array<String>) {
-    ServerRunner().run()
+    @JvmStatic
+    fun main(args: Array<String>) {
+        ServerRunner().run()
+    }
 }
