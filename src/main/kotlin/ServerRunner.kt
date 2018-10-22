@@ -1,5 +1,7 @@
+import com.google.gson.GsonBuilder
 import spark.Spark
 import spark.kotlin.*
+import java.awt.Frame
 
 class ServerRunner {
 
@@ -23,10 +25,11 @@ class ServerRunner {
 
     private fun setupAllCharactersJsonRoute() {
         get("/all") {
-            """
+            val jsonString = """
                 {
 	"characters": [{
-			"heihachi": [{
+			"name": "heihachi",
+			"moveTypes": [{
 					"basicMoves": [{
 							"command": "1",
 							"hitType": "high",
@@ -64,7 +67,8 @@ class ServerRunner {
 			]
 		},
 		{
-			"kazuya": [{
+			"name": "heihachi",
+			"moveTypes": [{
 					"basicMoves": [{
 							"command": "1",
 							"hitType": "high",
@@ -103,7 +107,10 @@ class ServerRunner {
 		}
 	]
 }
-            """.trimIndent()
+            """
+            val allCharacterFrameData = GsonBuilder().create().fromJson(jsonString, FrameData.AllCharacters::class.java)
+            GsonBuilder().setPrettyPrinting().create().toJson(allCharacterFrameData)
+
         }
     }
 
