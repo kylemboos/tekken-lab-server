@@ -2,12 +2,12 @@ object FrameData {
     data class AllCharacters(val characters: List<CharacterFrameData>)
     data class CharacterFrameData(
             val name: String,
-            val moveTypes: List<MoveTypes>
+            val moveList: MoveList
     )
 
-    data class MoveTypes(
-            val basicMoves: List<MoveFrameData>,
-            val specialMoves: List<MoveFrameData>
+    data class MoveList(
+            val basicMoveList: List<MoveFrameData>,
+            val specialMoveList: List<MoveFrameData>? = null
     )
 
     data class MoveFrameData(
