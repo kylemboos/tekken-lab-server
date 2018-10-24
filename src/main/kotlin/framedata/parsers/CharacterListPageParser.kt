@@ -4,20 +4,38 @@ import framedata.util.BASE_URL
 import framedata.util.FrameDataDocumentFetcher.getCharacterHtmlDocument
 import framedata.util.FrameDataDocumentFetcher.getCharacterListHtmlDocument
 import framedata.models.FrameData
+import framedata.util.getCharacterNameFromUrl
+import framedata.util.removeBaseUrl
 import org.jsoup.nodes.Document
 
 private const val NUMBER_OF_NON_CHARACTER_HTML_LINKS = 3
 
 class CharacterListPageParser(private val characterListDocument: Document = getCharacterListHtmlDocument()) {
 
-    fun getAllCharacterFrameData(): FrameData.AllCharacters {
-        val characterUrls = getCharacterUrlList()
+    val characterUrlMap = createCharacterUrlMap()
 
+    private fun createCharacterUrlMap(): Map<String, String> {
+        val characterUrls = getCharacterUrlList()
+        val characterUrlMap = mutableMapOf<String, String>()
+        characterUrls.forEach { url ->
+            characterUrlMap[getCharacterRouteKey(url)] = url
+        }
+        return characterUrlMap
+    }
+
+    private fun getCharacterRouteKey(characterUrl: String): String {
+        return characterUrl
+                .removeBaseUrl()
+                .replace("-", "")
+                .toLowerCase()
+    }
+
+    fun getAllCharacterFrameData(): FrameData.AllCharacters {
         return FrameData.AllCharacters(
-                characters = characterUrls.map { characterUrl ->
-                    val characterDocument = getCharacterHtmlDocument(characterUrl)
+                characters = characterUrlMap.entries.map { characterUrlEntry ->
+                    val characterDocument = getCharacterHtmlDocument(characterUrlEntry.value)
                     val characterParser = CharacterPageParser(
-                            characterName = getCharacterNameFromUrl(characterUrl),
+                            characterName = getCharacterNameFromUrl(characterUrlEntry.value),
                             characterDocument = characterDocument)
 
                     characterParser.getCharacterFrameData()
@@ -48,15 +66,5 @@ class CharacterListPageParser(private val characterListDocument: Document = getC
                 BASE_URL + characterLink
             }
         }
-    }
-
-    private fun getCharacterNameFromUrl(characterUrl: String): String {
-        val fullName = characterUrl
-                .removePrefix(BASE_URL)
-                .replaceAfter("t7", "")
-                .removeSuffix("t7")
-                .replace("-", " ")
-                .removeSuffix(" ")
-        return fullName.split(" ").map { it.capitalize() }.joinToString(" ")
     }
 }
