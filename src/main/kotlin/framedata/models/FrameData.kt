@@ -1,3 +1,5 @@
+package framedata.models
+
 object FrameData {
     data class AllCharacters(val characters: List<CharacterFrameData>)
     data class CharacterFrameData(
